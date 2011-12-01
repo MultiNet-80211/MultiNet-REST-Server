@@ -4,19 +4,16 @@ Created on 19 Oct 2011
 @author: psxab
 '''
 
-#from http.server import BaseHTTPRequestHandler, HTTPServer
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import ssl
-import os
 import re
 import subprocess
 
 class MutinetREST(BaseHTTPRequestHandler):
     
-    configfile = "/root/multi-net/live_hostapd.conf"
-    #configfile = "./live_hostapd.conf"
+    #configfile = "/root/multi-net/live_hostapd.conf"
+    configfile = "./cfg/demo_hostapd.conf"
     restartScript = "/root/multi-net/restartMultinet.sh"
-    #restartScript = "ping 127.0.0.1"
         
     def do_GET(self):
         args = self.path[1:]
@@ -32,23 +29,23 @@ class MutinetREST(BaseHTTPRequestHandler):
         elif args[0] == "list":
             xml = self.listNetworks(args)
         else: 
-            xml = "Unsuported Method"
+            xml = self.getFile(args)
         
         return self.sendPage(xml);
 
     def create(self,args):
         """Add the requested network to the config file and restart multinet"""
-        #p = subprocess.Popen(['ping', '128.243.1.1'], stdout=subprocess.PIPE)
-        #result = p.communicate()[0]
-        #print(result)
-        sucsess = self.addNetworkToHostapdConfig(args[1],args[2])
-        xml = "<?xml version=\"1.0\"?>"
-        xml += "<result>\n"
-        xml += "    <action>create</action>\n"
-        xml += "    <success>%s</success>\n" % sucsess
-        xml += "    <ssid>%s</ssid>\n" % args[1]
-        xml += "</result>\n"
-        return xml
+        if len(args) != 2:
+            return self.showGenorationInterface()
+        else:
+            sucsess = self.addNetworkToHostapdConfig(args[1],args[2])
+            xml = "<?xml version=\"1.0\"?>"
+            xml += "<result>\n"
+            xml += "    <action>create</action>\n"
+            xml += "    <success>%s</success>\n" % sucsess
+            xml += "    <ssid>%s</ssid>\n" % args[1]
+            xml += "</result>\n"
+            return xml
     
     def remove(self,args):
         """Delete the requested network to the config file and restart multinet"""
@@ -70,8 +67,26 @@ class MutinetREST(BaseHTTPRequestHandler):
             
         xml += "</networkList>\n"
         return xml
-        
     
+    def showGenorationInterface(self):
+        """Interface to generate valid QRcodes"""
+        f = open("./generate.html", "r")
+        html = f.read()
+        f.close()
+        return html
+    
+    def getFile(self,args):
+        try:
+            path = "./" 
+            path += "/".join(args)
+            f = open(path, 'rb')
+            html = f.read()
+            f.close()
+            return html
+        except IOError:
+            return "Unsupported Operation"
+      
+            
     def sendPage(self, body = "", t = "text/html"):
         body = body.encode('UTF-8')
         self.send_response(200)
@@ -84,9 +99,9 @@ class MutinetREST(BaseHTTPRequestHandler):
     
     def readHostapdConfig(self):
         """Read the hostapd config file"""
-        fin = open(self.configfile, "r")
-        cfg = fin.read()
-        fin.close()
+        f = open(self.configfile, "r")
+        cfg = f.read()
+        f.close()
         ssids = re.findall('(\nssid=.*\n.*\n.*\n.*\n)', cfg)
          
         networkList = []
@@ -104,9 +119,9 @@ class MutinetREST(BaseHTTPRequestHandler):
         
         n = len(networkList)
         
-        fin = open(self.configfile, "r")
-        cfg = fin.read()
-        fin.close()
+        f = open(self.configfile, "r")
+        cfg = f.read()
+        f.close()
         ssids = re.findall('(\nssid=' + ssid + '\n)', cfg)
         if len(ssids) == 0 :
             addStr = "\n"
@@ -127,8 +142,7 @@ class MutinetREST(BaseHTTPRequestHandler):
         
     def restartMultinet(self):
         """restart hostapd"""
-        #p = os.spawn(os.P_NOWAIT,self.restartScript)
-        p = subprocess.Popen(self.restartScript)
+        subprocess.Popen(self.restartScript)
         return 1
         
         

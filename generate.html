@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>QRcode generator</title>
+<script src="./jquery-qrcode/jquery.min.js"></script>
+<script type="text/javascript" src="./jquery-qrcode/jquery.qrcode.min.js"></script>
+<script type="text/javascript">
+	
+	function generate() {
+		var str = "addnetwork~" + $("input#ssid").val() + '~' + $("input#passphrase").val();
+		$('#output').qrcode(str);
+		return false;
+	}
+	
+	$(document).ready(function() {
+	 $('.error').hide();   
+	 
+	 $("#submit_btn").click(function() {  
+       $('.error').hide(); 
+	   var name = $("input#ssid").val();  
+       if (name == "") {  
+         $("label#ssid_error").show();  
+         $("input#ssid").focus();  
+  	     return false;  
+	   }
+	   
+	   name = $("input#passphrase").val();  
+       if (name == "") {  
+         $("label#passphrase_error").show();  
+         $("input#passphrase").focus();  
+  	     return false;  
+	   }
+	   
+	   $('#form').hide();
+	   generate();  
+	 });
+	
+	
+    });  
+</script>
+</head>
+<body>
+<div id="form">
+	<form name="" action="">  
+	  <fieldset>
+	  
+	  <label for="ssid" id="ssid_label">SSID</label>  
+      <input type="text" name="ssid" id="ssid" size="30" value="" class="text-input" />  
+      <label class="error" for="ssid" id="ssid_error">This field is required.</label>  
+      <br />
+      <label for="passphrase" id="passphrase_label">Passphrase</label>  
+      <input type="text" name="passphrase" id="passphrase" size="30" value="" class="text-input" />  
+      <label class="error" for="passphrase" id="passphrase_error">This field is required.</label>  
+  
+	  </fieldset>
+	  <br />  
+	  <input type="button" name="submit" class="submit" id="submit_btn" value="Generate" />    
+	</form>  
+</div>
+<div id="output"></div>
+</body>
+</html>
