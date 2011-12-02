@@ -8,17 +8,44 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import ssl
 import re
 import subprocess
+from base64 import b64decode
 
 class MutinetREST(BaseHTTPRequestHandler):
     
     #configfile = "/root/multi-net/live_hostapd.conf"
     configfile = "./cfg/demo_hostapd.conf"
     restartScript = "/root/multi-net/restartMultinet.sh"
-        
+    adminUser = "admin"
+    adminPass = "admin"
+    
+    def do_AUTHHEAD(self):
+        print "send header"
+        self.send_response(401)
+        self.send_header('WWW-Authenticate', 'Basic realm=\"MultiNet\"')
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+    
     def do_GET(self):
         args = self.path[1:]
-        args = args.split('/');
+        args = args.split('/')
         
+        if self.headers.getheader('Authorization') == None:
+            self.do_AUTHHEAD()
+            return
+        
+        auth = self.headers.getheader('Authorization')
+        (authType, data) = auth.split(' ')
+        
+        if authType != "Basic":
+            xml = "Unsuported Auth Method"
+            return xml
+        
+        (username, _, password) = b64decode(data).partition(':')
+        
+        if username != self.adminUser or password != self.adminPass:
+            self.do_AUTHHEAD()
+            return
+
         if len(args) == 0:
             xml = "Unsuported Method"
                             
