@@ -79,6 +79,10 @@ class MutinetREST(BaseHTTPRequestHandler):
         try:
             path = "./" 
             path += "/".join(args)
+            
+            if path.endswith(".py") or path.endswith(".pyc") or path.endswith(".conf"):
+                return "Unsupported Operation"
+            
             f = open(path, 'rb')
             html = f.read()
             f.close()

@@ -5,57 +5,98 @@
 <script type="text/javascript" src="./jquery-qrcode/jquery.qrcode.min.js"></script>
 <script type="text/javascript">
 	
-	function generate() {
+	var generate = function() {
+	    
+		$('.error').hide();
+		
+		var name = $("input#device").val();  
+		if (name == "") {  
+			$("label#device_error").show();  
+			$("input#device").focus();  
+			return false;  
+		} 
+		
+		name = $("input#ssid").val();  
+		if (name == "") {  
+			$("label#ssid_error").show();  
+			$("input#ssid").focus();  
+			return false;  
+		}
+		
+		name = $("input#passphrase").val();  
+			if (name == "") {  
+			$("label#passphrase_error").show();  
+			$("input#passphrase").focus();  
+			return false;  
+		}
+		
+		$('#form').hide();
+		    
 		var str = "addnetwork~" + $("input#ssid").val() + '~' + $("input#passphrase").val();
 		$('#output').qrcode(str);
+		$('#title').html($("input#device").val() + " QR-code");
+		$('#result').show();
 		return false;
-	}
+	};
+	
+	var print_fn = function() {
+		window.print();
+		return true;
+	};
+	
+	var reset = function() {
+	  $('#output').html('');
+	  $("input#ssid").val('');
+	  $("input#passphrase").val('');
+	  $('#form').show();
+	  $('#result').hide();
+	  return false;
+	};
 	
 	$(document).ready(function() {
-	 $('.error').hide();   
-	 
-	 $("#submit_btn").click(function() {  
-       $('.error').hide(); 
-	   var name = $("input#ssid").val();  
-       if (name == "") {  
-         $("label#ssid_error").show();  
-         $("input#ssid").focus();  
-  	     return false;  
-	   }
-	   
-	   name = $("input#passphrase").val();  
-       if (name == "") {  
-         $("label#passphrase_error").show();  
-         $("input#passphrase").focus();  
-  	     return false;  
-	   }
-	   
-	   $('#form').hide();
-	   generate();  
-	 });
-	
-	
+		$('.error').hide();   
+		$('#result').hide();
+		$("#print_btn").click(print_fn);
+		$("#reset_btn").click(reset);
+		$("#submit_btn").click(generate);
     });  
 </script>
+<link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-<div id="form">
+<center >
 	<form name="" action="">  
-	  <fieldset>
-	  
-	  <label for="ssid" id="ssid_label">SSID</label>  
-      <input type="text" name="ssid" id="ssid" size="30" value="" class="text-input" />  
-      <label class="error" for="ssid" id="ssid_error">This field is required.</label>  
-      <br />
-      <label for="passphrase" id="passphrase_label">Passphrase</label>  
-      <input type="text" name="passphrase" id="passphrase" size="30" value="" class="text-input" />  
-      <label class="error" for="passphrase" id="passphrase_error">This field is required.</label>  
-  
-	  </fieldset>
-	  <br />  
-	  <input type="button" name="submit" class="submit" id="submit_btn" value="Generate" />    
-	</form>  
-</div>
-<div id="output"></div>
+	   <fieldset id="form">
+	      <legend>Generate Network QR-code</legend>
+		  <label for="device" id="device_label">Device Name</label>
+		  <label class="error" for="device" id="device_error">This field is required.</label>    
+	      <input class="text" type="text" name="device" id="device" size="30" value="" />  
+	      <br />
+		  <label for="ssid" id="ssid_label">SSID</label>
+		  <label class="error" for="ssid" id="ssid_error">This field is required.</label>    
+	      <input class="text" type="text" name="ssid" id="ssid" size="30" value="" />  
+	      <br />
+	      <label for="passphrase" id="passphrase_label">Passphrase</label>  
+	      <label class="error" for="passphrase" id="passphrase_error">This field is required.</label>
+	      <input class="text" type="text" name="passphrase" id="passphrase" size="30" value="" />  
+	  	  <br />  
+		  <center><input type="button" name="submit" class="submit" id="submit_btn" value="Generate" /></center>    
+		</fieldset>
+		  
+		<fieldset id="result">
+		    <legend id="title"></legend>
+		    <p class="no_print">Please scan the code below to create the network you have just requested. We also recommend printing a copy to keep with the device.<p>
+		    <center><div id="output"></div></center>
+		    <br />
+		    <center class="no_print">
+		    	<input type="button" name="print" class="print" id="print_btn" value="Print" />
+		    	&nbsp;&nbsp;&nbsp;
+		    	<input type="button" name="reset" class="reset" id="reset_btn" value="Add Another" />
+		    </center>    
+		    
+		</fieldset>
+		
+	  </form>  
+</center>
 </body>
 </html>

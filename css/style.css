@@ -1,0 +1,64 @@
+
+@media print{
+  .no_print { display:none; }
+}
+
+
+html {margin: 0; padding: 0;}
+body {margin: 0; padding: 0; font-family: Arial, Sans-Serif; font-size: 1em;}
+
+.error {
+		font-size: 1em;
+		color: red; 
+		margin-left: 0.5em; 
+		font-weight: normal;
+		}
+
+input {	
+		font-family: Arial, Sans-Serif;
+	    border: solid 1px #85b1de;
+	    background-color: #EDF2F7;
+	    width: 8em;
+	    padding: 0.5em;
+	    }
+
+.text {
+ 		width: 90%;	
+	    display: block;
+	    margin-bottom: 5px;
+	    padding: 0.5em;
+	    margin-left: 2em;
+	    }
+
+.submit {	
+	    width: 30%;
+	    margin-left: -10%;
+	  }
+
+input:focus {	
+	    background-color: #ffffff;
+    	border: solid 1px #33677F;
+	    }
+
+fieldset {
+		text-align: left;
+		width: 40em;
+	    background-color: #d6e5f4;
+    }
+    
+legend {
+		font-size: 1.5em;
+		font-weight: bold;
+		color: #808080;
+}
+   
+label {
+ 		margin-left: 1em;
+		font-size: 1.5em;
+		font-weight: bold;
+		color: #808080
+}
+
+form {
+	padding-top: 25%;
+}
