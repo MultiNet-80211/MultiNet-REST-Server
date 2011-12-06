@@ -1,11 +1,5 @@
-
-@media print{
-  .no_print { display:none; }
-}
-
-
 html {margin: 0; padding: 0;}
-body {margin: 0; padding: 0; font-family: Arial, Sans-Serif; font-size: 1em;}
+body {margin: 0; padding: 0; font-family: Arial, Sans-Serif; font-size: 100%;}
 
 .error {
 		font-size: 1em;
@@ -42,7 +36,8 @@ input:focus {
 
 fieldset {
 		text-align: left;
-		width: 40em;
+		width: 90%;
+		max-width:30em;
 	    background-color: #d6e5f4;
     }
     
@@ -62,3 +57,17 @@ label {
 form {
 	padding-top: 25%;
 }
+
+
+@media print{
+  .no_print { display:none; }
+}
+
+@media only screen and (max-device-width: 480px) {
+  body {font-size: 80%}
+  form {padding-top: 5%;}
+  .print {display: none;}
+}
+
+
+
