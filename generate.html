@@ -1,5 +1,6 @@
 <html>
 <head>
+<meta name="viewport" content="width=device-width" />
 <title>QRcode generator</title>
 <script src="./jquery-qrcode/jquery.min.js"></script>
 <script type="text/javascript" src="./jquery-qrcode/jquery.qrcode.min.js"></script>
@@ -53,11 +54,23 @@
 	  return false;
 	};
 	
+	var create = function () {
+	   var str = "/create/" + $("input#ssid").val() + '/' + $("input#passphrase").val();
+	   $.ajax({
+		  url: str,
+		  context: document.body,
+		  success: function(){
+	    	alert("Network Added");
+  			}
+		});
+	};
+	
 	$(document).ready(function() {
 		$('.error').hide();   
 		$('#result').hide();
 		$("#print_btn").click(print_fn);
 		$("#reset_btn").click(reset);
+		$("#create_btn").click(create);
 		$("#submit_btn").click(generate);
     });  
 </script>
@@ -89,6 +102,8 @@
 		    <center><div id="output"></div></center>
 		    <br />
 		    <center class="no_print">
+		        <input type="button" name="create" class="create" id="create_btn" value="Create Now !" />
+		    	&nbsp;&nbsp;&nbsp;
 		    	<input type="button" name="print" class="print" id="print_btn" value="Print" />
 		    	&nbsp;&nbsp;&nbsp;
 		    	<input type="button" name="reset" class="reset" id="reset_btn" value="Add Another" />

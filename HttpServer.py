@@ -41,7 +41,7 @@ class MutinetREST(BaseHTTPRequestHandler):
             return xml
         
         (username, _, password) = b64decode(data).partition(':')
-        
+        print "username = " + username + " password = " + password
         if username != self.adminUser or password != self.adminPass:
             self.do_AUTHHEAD()
             return
@@ -62,8 +62,8 @@ class MutinetREST(BaseHTTPRequestHandler):
 
     def create(self,args):
         """Add the requested network to the config file and restart multinet"""
-        if len(args) != 2:
-            return self.showGenorationInterface()
+        if len(args) != 3:
+            return "Wrong parameter  count"
         else:
             sucsess = self.addNetworkToHostapdConfig(args[1],args[2])
             xml = "<?xml version=\"1.0\"?>"
