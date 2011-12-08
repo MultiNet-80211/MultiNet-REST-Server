@@ -12,8 +12,8 @@ from base64 import b64decode
 
 class MutinetREST(BaseHTTPRequestHandler):
     
-    #configfile = "/root/multi-net/live_hostapd.conf"
-    configfile = "./cfg/demo_hostapd.conf"
+    configfile = "/root/multi-net/live_hostapd.conf"
+    #configfile = "./cfg/demo_hostapd.conf"
     restartScript = "/root/multi-net/restartMultinet.sh"
     adminUser = "admin"
     adminPass = "admin"
@@ -62,7 +62,7 @@ class MutinetREST(BaseHTTPRequestHandler):
 
     def create(self,args):
         """Add the requested network to the config file and restart multinet"""
-        if len(args) != 3:
+        if len(args) < 3:
             return "Wrong parameter  count"
         else:
             sucsess = self.addNetworkToHostapdConfig(args[1],args[2])
