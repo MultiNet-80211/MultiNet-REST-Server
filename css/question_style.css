@@ -1,0 +1,39 @@
+
+fieldset {
+		max-width:100em;
+		width:70%;
+		
+}
+
+.answer
+{
+	float:left;
+	width:80%;
+	padding-left: 3em;
+} 
+    
+lable {
+	float:left;
+	padding: 0.5em;
+	padding-top: 1em;
+	text-align:center;
+	min-width:2em;
+	font-size: 80%;
+	font-weight:bold;
+}  
+
+
+input {
+	
+}
+
+li {
+	padding-top: 2em;
+	clear:both;
+}
+
+p {
+	padding-top: 1em;
+	clear:both;
+	text-align:center;
+}
