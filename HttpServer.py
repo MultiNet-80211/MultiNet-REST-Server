@@ -14,8 +14,8 @@ from base64 import b64decode
 
 class MutinetREST(BaseHTTPRequestHandler):
     
-    configfile = "/root/multi-net/live_hostapd.conf"
-    #configfile = "./cfg/demo_hostapd.conf"
+    #configfile = "/root/multi-net/live_hostapd.conf"
+    configfile = "./cfg/demo_hostapd.conf"
     restartScript = "/root/multi-net/restartMultinet.sh"
     adminUser = "admin"
     adminPass = "admin"
