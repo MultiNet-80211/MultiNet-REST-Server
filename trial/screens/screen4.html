@@ -1,0 +1,59 @@
+<h1>Task 1 - WPS configuration</h1>
+
+<ul style="list-style-type:none;">
+<li class="q">
+	<div class="answer"><b>Device:</b><select name="d1"><option value=""></option><option value="Laptop">Laptop</option><option value="SqueezeBox">SqueezeBox</option><option value="Printer">Printer</option></select></div>
+	<div class="answer">
+		<b>Start:<input style="width:10em" type="text" size="110" id="lp_strat" value="" /></b>&nbsp;&nbsp;<span class="button" onclick="setDate('lp_strat')">Start</span>
+	</div>
+	<div class="answer">
+		<b>Stop Instructions:<input style="width:10em" type="text" size="110" id="lp_ins" value="" /></b>&nbsp;&nbsp;<span  class="button" onclick="setDate('lp_ins')">Stop</span>
+	</div>
+	<div class="answer">
+		<b>Tasks Complete:<input style="width:10em" type="text" size="110" id="lp_task" value="" /></b>&nbsp;&nbsp;<span  class="button" onclick="setDate('lp_task')">Stop</span>
+	</div>
+	<div class="answer">
+		<b>Device Connected:<input style="width:10em" type="text" size="110" id="lp_stop" value="" /></b>&nbsp;&nbsp;<span class="button" onclick="setDate('lp_stop')">Stop</span>
+	</div>
+	<div class="answer">
+		<b>Notes:<br/><textarea style="width:30em; height:10em" id="lp_notes"></textarea></b>
+	</div>
+</li>
+<li class="q">
+	<div class="answer"><b>Device:</b><select name="d2"><option value=""></option><option value="Laptop">Laptop</option><option value="SqueezeBox">SqueezeBox</option><option value="Printer">Printer</option></select></div>
+	<div class="answer">
+		<b>Start:<input style="width:10em" type="text" size="110" id="p_strat" value="" /></b>&nbsp;&nbsp;<span class="button" onclick="setDate('p_strat')">Start</span>
+	</div>
+	<div class="answer">
+		<b>Stop Instructions:<input style="width:10em" type="text" size="110" id="p_ins" value="" /></b>&nbsp;&nbsp;<span  class="button" onclick="setDate('p_ins')">Stop</span>
+	</div>
+	<div class="answer">
+		<b>Tasks Complete:<input style="width:10em" type="text" size="110" id="p_task" value="" /></b>&nbsp;&nbsp;<span  class="button" onclick="setDate('p_task')">Stop</span>
+	</div>
+	<div class="answer">
+		<b>Device Connected:<input style="width:10em" type="text" size="110" id="p_stop" value="" /></b>&nbsp;&nbsp;<span  class="button" onclick="setDate('p_stop')">Stop</span>
+	</div>
+	<div class="answer">
+		<b>Notes:<br/><textarea style="width:30em; height:10em" name="p_notes"></textarea></b>
+	</div>
+</li>
+<li class="q">
+	<div class="answer"><b>Device:</b><select name="d3"><option value=""></option><option value="Laptop">Laptop</option><option value="SqueezeBox">SqueezeBox</option><option value="Printer">Printer</option></select></div>
+	<div class="answer">
+		<b>Start:<input style="width:10em" type="text" size="110" id="t_strat" value="" /></b>&nbsp;&nbsp;<span class="button" onclick="setDate('t_strat')">Start</span>
+	</div>
+	<div class="answer">
+		<b>Stop Instructions:<input style="width:10em" type="text" size="110" id="t_ins" value="" /></b>&nbsp;&nbsp;<span  class="button" onclick="setDate('t_ins')">Stop</span>
+	</div>
+	<div class="answer">
+		<b>Tasks Complete:<input style="width:10em" type="text" size="110" id="t_task" value="" /></b>&nbsp;&nbsp;<span  class="button" onclick="setDate('t_task')">Stop</span>
+	</div>
+	<div class="answer">
+		<b>Device Connected:<input style="width:10em" type="text" size="110" id="t_stop" value="" /></b>&nbsp;&nbsp;<span  class="button" onclick="setDate('t_stop')">Stop</span>
+	</div>
+	<div class="answer">
+		<b>Notes:<br/><textarea style="width:30em; height:10em" name="t_notes"></textarea></b>
+	</div>
+</li>
+<ul>
+<p><input id="next" type="button" value="Next >" onclick="save()"></p>

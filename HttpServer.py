@@ -6,17 +6,21 @@ Created on 19 Oct 2011
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import ssl
-import re
+import cgi
 import subprocess
+import os
 from base64 import b64decode
+from HostapdConfig import NetworkList
 
 class MutinetREST(BaseHTTPRequestHandler):
     
-    configfile = "/root/multi-net/live_hostapd.conf"
-    #configfile = "./cfg/demo_hostapd.conf"
+    #configfile = "/root/multi-net/live_hostapd.conf"
+    configfile = "./cfg/demo_hostapd.conf"
     restartScript = "/root/multi-net/restartMultinet.sh"
     adminUser = "admin"
     adminPass = "admin"
+    networkCfg = NetworkList()
+    networkCfg.load(configfile)
     
     def do_AUTHHEAD(self):
         print "send header"
@@ -25,6 +29,25 @@ class MutinetREST(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html')
         self.end_headers()
     
+    def do_POST(self):
+        args = self.path[1:]
+        args = args.split('/')
+        ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+        if ctype == 'multipart/form-data':
+            postvars = cgi.parse_multipart(self.rfile, pdict)
+        elif ctype == 'application/x-www-form-urlencoded':
+            length = int(self.headers.getheader('content-length'))
+            postvars = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
+        else:
+            postvars = {}
+
+        if args[0] == "saveAll":
+            xml = self.saveAll(args,postvars)
+        else: 
+            xml = "Unsuported Method"
+            
+        return self.sendPage(xml);
+        
     def do_GET(self):
         args = self.path[1:]
         args = args.split('/')
@@ -59,13 +82,13 @@ class MutinetREST(BaseHTTPRequestHandler):
             xml = self.getFile(args)
         
         return self.sendPage(xml);
-
+    
     def create(self,args):
         """Add the requested network to the config file and restart multinet"""
         if len(args) < 3:
             return "Wrong parameter  count"
         else:
-            sucsess = self.addNetworkToHostapdConfig(args[1],args[2])
+            sucsess = self.networkCfg.add(args[1],args[2],1)
             xml = "<?xml version=\"1.0\"?>"
             xml += "<result>\n"
             xml += "    <action>create</action>\n"
@@ -75,21 +98,24 @@ class MutinetREST(BaseHTTPRequestHandler):
             return xml
     
     def remove(self,args):
-        """Delete the requested network to the config file and restart multinet"""
-        xml = "<?xml version=\"1.0\"?>\n"
-        xml += "<result>\n"
-        xml += "    <action>remove</action>\n"
-        xml += "    <success>TRUE</success>\n"
-        xml += "    <ssid>%s</ssid>\n" % args[1]
-        xml += "</result>\n"
-        return xml
+        if len(args) < 1:
+            return "Wrong parameter  count"
+        else:
+            sucsess = self.networkCfg.remove(args[1])
+            """Delete the requested network to the config file and restart multinet"""
+            xml = "<?xml version=\"1.0\"?>\n"
+            xml += "<result>\n"
+            xml += "    <action>remove</action>\n"
+            xml += "    <success>%s</success>\n" % sucsess
+            xml += "    <ssid>%s</ssid>\n" % args[1]
+            xml += "</result>\n"
+            return xml
     
     def listNetworks(self,args):
         """List configured networks multinet"""
-        networks = self.readHostapdConfig()
         xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
         xml += "<networkList>\n"
-        for n in networks:
+        for n in self.networkCfg.networkList:
             xml += n.toXML();
             
         xml += "</networkList>\n"
@@ -127,72 +153,23 @@ class MutinetREST(BaseHTTPRequestHandler):
         self.wfile.write(body)
         self.wfile.flush()
         return
-    
-    def readHostapdConfig(self):
-        """Read the hostapd config file"""
-        f = open(self.configfile, "r")
-        cfg = f.read()
-        f.close()
-        ssids = re.findall('(\nssid=.*\n.*\n.*\n.*\n)', cfg)
-         
-        networkList = []
-        for i in range(len(ssids)):
-            ssid = re.search('(?:ssid=)(.*)(?:\n)', ssids[i]).group(1)
-            wpa = re.search('(?:wpa=)(.*)(?:\n)', ssids[i]).group(1)
-            networkList.append(MultinetNetwork(ssid,wpa))
-        
-        return networkList
-
-    def addNetworkToHostapdConfig(self,ssid,passphrase):
-        """add a network to the hostapd config file"""
-        
-        networkList = self.readHostapdConfig()
-        
-        n = len(networkList)
-        
-        f = open(self.configfile, "r")
-        cfg = f.read()
-        f.close()
-        ssids = re.findall('(\nssid=' + ssid + '\n)', cfg)
-        if len(ssids) == 0 :
-            addStr = "\n"
-            addStr += "bss=wlan_" + str(n) + "\n"
-            addStr += "ssid=" + ssid + "\n"
-            addStr += "wpa=2\n"
-            #addStr += "ignore_broadcast_ssid=1\n"
-            addStr += "wpa_pairwise=CCMP\n"
-            addStr += "wpa_passphrase=" + passphrase + "\n"
-            addStr += "\n"
-            fout = open(self.configfile, "a")
-            fout.write(addStr)
-            fout.close()
-            self.restartMultinet()
-            return "TRUE"
-        else :
-            return "FALSE"
         
     def restartMultinet(self):
         """restart hostapd"""
         subprocess.Popen(self.restartScript)
         return 1
-        
-        
-class MultinetNetwork():
-    ssid = ""
-    wpa = ""
-    def __init__(self,ssid,wpa):
-        self.ssid = ssid
-        self.wpa = wpa
-
-    def toXML(self):
-        xml = " <network>\n"
-        xml += "    <active>TRUE</active>\n"
-        xml += "    <ssid>" + self.ssid + "</ssid>\n"
-        xml += "</network>\n"
-        return xml
-
     
-    
+    def saveAll(self,args,postvars):
+        #save data to disk!!
+        p= os.path.join(os.getcwd(),'trial','data') 
+        for item in postvars:
+            f = open(p + '/' + item + '.csv', 'a+')
+            tmp = "".join(postvars[item])
+            print(tmp)
+            f.write(tmp + "\n")
+            f.close()
+        return "<h1>ALL done thanks for taking part !</h1><div>Answers saved successfully!</div>"
+        
 def main():
     try:
         server_address = ('', 80)
