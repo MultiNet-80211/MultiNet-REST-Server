@@ -118,7 +118,8 @@ class MutinetREST(BaseHTTPRequestHandler):
         xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n"
         xml += "<networkList>\n"
         for n in self.networkCfg.networkList:
-            xml += n.toXML();
+            if n.active == True:
+                xml += n.toXML();
             
         xml += "</networkList>\n"
         return xml

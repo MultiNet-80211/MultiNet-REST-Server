@@ -66,14 +66,14 @@ class NetworkList():
         networkFound = False
         for network in self.networkList:
             if network.ssid == SSID:
-                loc = self.networkList.index(network)
-                self.networkList[loc] = MultinetNetwork()
-                self.networkList[loc].active = False
-                networkFound = True
+                networkFound = self.networkList.index(network)
                 break
             
-        if networkFound == True:    
+        if networkFound != False:    
+            self.networkList[networkFound] = MultinetNetwork()
+            self.networkList[networkFound].active = False
             self.save()
+            return True
         
         return networkFound
             
