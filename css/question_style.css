@@ -32,6 +32,10 @@ li {
 	clear:both;
 }
 
+ul li {
+	list-style-type: none;
+}
+
 p {
 	padding-top: 1em;
 	clear:both;
