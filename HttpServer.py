@@ -14,8 +14,8 @@ from HostapdConfig import NetworkList
 
 class MutinetREST(BaseHTTPRequestHandler):
     
-    #configfile = "/root/multi-net/live_hostapd.conf"
-    configfile = "./cfg/demo_hostapd.conf"
+    configfile = "/root/multi-net/live_hostapd.conf"
+    #configfile = "./cfg/demo_hostapd.conf"
     restartScript = "/root/multi-net/restartMultinet.sh"
     adminUser = "admin"
     adminPass = "admin"
@@ -88,13 +88,14 @@ class MutinetREST(BaseHTTPRequestHandler):
         if len(args) < 3:
             return "Wrong parameter  count"
         else:
-            sucsess = self.networkCfg.add(args[1],args[2],1)
+            sucsess = self.networkCfg.add(args[1],args[2],0)
             xml = "<?xml version=\"1.0\"?>"
             xml += "<result>\n"
             xml += "    <action>create</action>\n"
             xml += "    <success>%s</success>\n" % sucsess
             xml += "    <ssid>%s</ssid>\n" % args[1]
             xml += "</result>\n"
+            self.restartMultinet()
             return xml
     
     def remove(self,args):
@@ -109,6 +110,7 @@ class MutinetREST(BaseHTTPRequestHandler):
             xml += "    <success>%s</success>\n" % sucsess
             xml += "    <ssid>%s</ssid>\n" % args[1]
             xml += "</result>\n"
+            self.restartMultinet()
             return xml
     
     def listNetworks(self,args):
