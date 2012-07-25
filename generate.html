@@ -10,22 +10,27 @@
 	    
 		$('.error').hide();
 		
-		var name = $("input#device").val();  
-		if (name == "") {  
+		var tmp = $("input#device").val();  
+		if (tmp == "") {  
 			$("label#device_error").show();  
 			$("input#device").focus();  
 			return false;  
 		} 
 		
-		name = $("input#ssid").val();  
-		if (name == "") {  
+		tmp = $("input#ssid").val();  
+		if (tmp == "") {  
 			$("label#ssid_error").show();  
 			$("input#ssid").focus();  
 			return false;  
 		}
 		
-		name = $("input#passphrase").val();  
-			if (name == "") {  
+		tmp = $("input#passphrase").val();  
+		if (tmp == "") {  
+			$("label#passphrase_error").show();  
+			$("input#passphrase").focus();  
+			return false;  
+		}
+		if (tmp.length < 8 || tmp.length > 63) {  
 			$("label#passphrase_error").show();  
 			$("input#passphrase").focus();  
 			return false;  
@@ -33,7 +38,7 @@
 		
 		$('#form').hide();
 		    
-		var str = "addnetwork~" + $("input#ssid").val() + '~' + $("input#passphrase").val();
+		var str = "addnetwork~" + $("input#ssid").val() + '~' + $("input#passphrase").val() + '~' + $("input#device").val();
 		$('#output').qrcode(str);
 		$('#title').html($("input#device").val() + " QR-code");
 		$('#result').show();
@@ -55,7 +60,7 @@
 	};
 	
 	var create = function () {
-	   var str = "/create/" + $("input#ssid").val() + '/' + $("input#passphrase").val();
+	   var str = "/create/" + $("input#ssid").val() + '/' + $("input#passphrase").val() + '/' + $("input#device").val();
 	   $.ajax({
 		  url: str,
 		  context: document.body,

@@ -30,6 +30,8 @@ class NetworkList():
         
             if inNetwork:
                 keyval = line.split('=')
+                if keyval[0] == '#deviceName':
+                    newNetwork.deviceName = keyval[1].rstrip()
                 if keyval[0] == 'ignore_broadcast_ssid':
                     newNetwork.ignore_broadcast_ssid = keyval[1].rstrip()
                 elif keyval[0] == 'ssid':
@@ -43,12 +45,13 @@ class NetworkList():
         self.networkList.append(newNetwork)        
         f.close()
         
-    def add(self,SSID,wpa_passphrase,ignore_broadcast_ssid = 0):
+    def add(self,SSID,wpa_passphrase,deviceName,ignore_broadcast_ssid = 0):
         newNetwork = MultinetNetwork()
         newNetwork.active = True
         newNetwork.ignore_broadcast_ssid = ignore_broadcast_ssid
         newNetwork.ssid = SSID
         newNetwork.wpa_passphrase = wpa_passphrase
+        newNetwork.deviceName = deviceName
         added = False
         for network in self.networkList:
             if network.active == False:
@@ -63,13 +66,13 @@ class NetworkList():
         return added 
             
     def remove(self,SSID):
-        networkFound = False
+        networkFound = -1
         for network in self.networkList:
             if network.ssid == SSID:
                 networkFound = self.networkList.index(network)
                 break
             
-        if networkFound != False:    
+        if networkFound > -1:    
             self.networkList[networkFound] = MultinetNetwork()
             self.networkList[networkFound].active = False
             self.save()
@@ -86,10 +89,13 @@ class MultinetNetwork():
     wpa_passphrase = ''
     wpa = '2'
     wpa_pairwise = 'CCMP'
+    deviceName = '';
 
     def toString(self): 
         addStr = "#network\n"
         if self.active == True:
+            addStr += "#deviceName=" + self.deviceName +"\n"
+            addStr += "bss=\n"
             addStr += "ssid=" + str(self.ssid) + "\n"
             addStr += "wpa=" + str(self.wpa) + "\n"
             addStr += "ignore_broadcast_ssid=" + str(self.ignore_broadcast_ssid) + "\n"
@@ -102,6 +108,7 @@ class MultinetNetwork():
         xml = " <network>\n"
         xml += "    <active>TRUE</active>\n"
         xml += "    <ssid>" + self.ssid + "</ssid>\n"
+        xml += "    <deviceName>" + self.deviceName + "</deviceName>\n"
         xml += "</network>\n"
         return xml
  

@@ -14,9 +14,9 @@ from HostapdConfig import NetworkList
 
 class MutinetREST(BaseHTTPRequestHandler):
     
-    configfile = "/root/multi-net/live_hostapd.conf"
+    configfile = "/root/multinet/live_hostapd.conf"
     #configfile = "./cfg/demo_hostapd.conf"
-    restartScript = "/root/multi-net/restartMultinet.sh"
+    restartScript = "/root/multinet/restartMultinet.sh"
     adminUser = "admin"
     adminPass = "admin"
     networkCfg = NetworkList()
@@ -85,10 +85,10 @@ class MutinetREST(BaseHTTPRequestHandler):
     
     def create(self,args):
         """Add the requested network to the config file and restart multinet"""
-        if len(args) < 3:
+        if len(args) < 4:
             return "Wrong parameter  count"
         else:
-            sucsess = self.networkCfg.add(args[1],args[2],0)
+            sucsess = self.networkCfg.add(args[1],args[2],args[3],0)
             xml = "<?xml version=\"1.0\"?>"
             xml += "<result>\n"
             xml += "    <action>create</action>\n"
