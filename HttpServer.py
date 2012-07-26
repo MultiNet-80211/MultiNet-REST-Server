@@ -9,6 +9,7 @@ import ssl
 import cgi
 import subprocess
 import os
+import urllib
 from base64 import b64decode
 from HostapdConfig import NetworkList
 
@@ -49,8 +50,6 @@ class MutinetREST(BaseHTTPRequestHandler):
         return self.sendPage(xml);
         
     def do_GET(self):
-        args = self.path[1:]
-        args = args.split('/')
         
         if self.headers.getheader('Authorization') == None:
             self.do_AUTHHEAD()
@@ -68,7 +67,12 @@ class MutinetREST(BaseHTTPRequestHandler):
         if username != self.adminUser or password != self.adminPass:
             self.do_AUTHHEAD()
             return
-
+        
+        """Work out what to do with the arguments"""
+        args = self.path[1:]
+        args = urllib.unquote_plus(args)
+        args = args.split('/')
+        
         if len(args) == 0:
             xml = "Unsuported Method"
                             
